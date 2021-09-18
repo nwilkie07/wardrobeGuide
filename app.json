@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "waredrobeGuide",
-    "slug": "waredrobeGuide",
+    "name": "wardrobeGuide",
+    "slug": "wardrobeGuide",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
