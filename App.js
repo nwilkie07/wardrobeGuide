@@ -19,8 +19,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
 
-const auth0ClientId = "lwLIMn3PErALFA3LM6aculLTIuZwqIxd";
-const authorizationEndpoint = "https://dev-zvi726ys.us.auth0.com/authorize";
+const auth0ClientId = "";
+const authorizationEndpoint = "";
 
 const useProxy = Platform.select({ web: false, default: true });
 const redirectUri = AuthSession.makeRedirectUri({ useProxy });
