@@ -1,11 +1,22 @@
 import * as AuthSession from 'expo-auth-session';
 import jwtDecode from 'jwt-decode';
 import * as React from 'react';
-import { Alert, Button, Platform, StyleSheet, Text, View, Pressable } from 'react-native';
-import { REACT_APP_AUTH_CLIENT_ID, REACT_APP_AUTH_ENDPOINT } from '@env';
+import { Alert, Button, Platform, StyleSheet, Text, View, Pressable, LogBox, TouchableOpacity } from 'react-native';
+import { REACT_APP_AUTH_CLIENT_ID, REACT_APP_AUTH_ENDPOINT, REACT_APP_FB_API_KEY, REACT_APP_FB_AUTH_DOMAIN, REACT_APP_FB_DB, REACT_APP_FB_PID, REACT_APP_FB_SB, REACT_APP_FB_MSG_ID, REACT_APP_FB_APP_ID, REACT_APP_FB_M_ID } from '@env';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import firebase from 'firebase/app'
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from 'expo-file-system';
+// Optionally import the services that you want to use
+//import "firebase/auth";
+//import "firebase/database";
+//import "firebase/firestore";
+//import "firebase/functions";
+//import "firebase/storage";
+
+let username = "";
 
 const auth0ClientId = REACT_APP_AUTH_CLIENT_ID;
 const authorizationEndpoint = REACT_APP_AUTH_ENDPOINT;
@@ -15,10 +26,54 @@ const redirectUri = AuthSession.makeRedirectUri({ useProxy });
 
 const Tab = createMaterialBottomTabNavigator();
 
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: REACT_APP_FB_API_KEY,
+  authDomain: REACT_APP_FB_AUTH_DOMAIN,
+  databaseURL: REACT_APP_FB_DB,
+  projectId: REACT_APP_FB_PID,
+  storageBucket: REACT_APP_FB_SB,
+  messagingSenderId: REACT_APP_FB_MSG_ID,
+  appId: REACT_APP_FB_APP_ID,
+  measurementId: REACT_APP_FB_M_ID,
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+// Firebase sets some timeers for a long period, which will trigger some warnings. Let's turn that off for this example
+LogBox.ignoreLogs([`Setting a timer for a long period`]);
+
+const onSelectImagePress = () =>
+  launchImageLibrary({ mediaType: 'image' }, onMediaSelect);
+
+const onMediaSelect = async (media) => {
+  //INSERT YOUR CODE FOR TAKING PHOTO HERE
+  //img to be uploaded is assumed to be a variable called file
+
+  // Create a ref in Firebase (user's ID)
+  const ref = firebase.storage().ref().child(`uploads/${username}`);
+
+  // Upload Base64 image to Firebase
+  const snapshot = await ref.putString(file, 'base64');
+
+  // Create a download URL
+  const remoteURL = await snapshot.ref.getDownloadURL();
+
+  // Return the URL
+  return remoteURL;
+};
+
 function Camera() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Feed!</Text>
+      <Text style={styles.title}>Firebase Storage</Text>
+      <View>
+        <TouchableOpacity style={styles.button} onPress={onSelectImagePress}>
+          <Text style={styles.buttonText}>Upload a Photo</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -125,6 +180,7 @@ export default function App() {
         const { nickname } = decoded;
         const { picture } = decoded;
         setName(nickname);
+        user = {nickname};
       }
     }
   }, [result]);
@@ -156,8 +212,10 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 50,
+    marginTop: 20,
     borderRadius: 4,
     elevation: 3,
     backgroundColor: '#D0C8CE',
