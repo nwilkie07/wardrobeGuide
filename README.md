@@ -5,7 +5,7 @@
 - Install with `npm install`.
 - Create your own app on [Auth0](https://auth0.com).
 - Add the `AuthSession` auth URL to `Allowed Callback URLs` on Auth0.
-- Add `auth0ClientId` and `auth0Domain` in your `.env` file.
+- Add `REACT_APP_AUTH_CLIENT_ID` (auth0ClientId) and `REACT_APP_AUTH_ENDPOINT` (auth0Domain) in your `.env` file.
 - Run [`expo start`](https://docs.expo.dev/versions/latest/workflow/expo-cli/), try it out.
 
 #### AuthSession callback URL
