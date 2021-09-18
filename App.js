@@ -1,14 +1,36 @@
-import * as AuthSession from 'expo-auth-session';
-import jwtDecode from 'jwt-decode';
-import * as React from 'react';
-import { Alert, Button, Platform, StyleSheet, Text, View, Pressable, LogBox, TouchableOpacity } from 'react-native';
-import { REACT_APP_AUTH_CLIENT_ID, REACT_APP_AUTH_ENDPOINT, REACT_APP_FB_API_KEY, REACT_APP_FB_AUTH_DOMAIN, REACT_APP_FB_DB, REACT_APP_FB_PID, REACT_APP_FB_SB, REACT_APP_FB_MSG_ID, REACT_APP_FB_APP_ID, REACT_APP_FB_M_ID } from '@env';
-import { NavigationContainer } from '@react-navigation/native';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import firebase from 'firebase/app'
+import * as AuthSession from "expo-auth-session";
+import jwtDecode from "jwt-decode";
+import * as React from "react";
+import {
+  Alert,
+  Button,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  LogBox,
+  TouchableOpacity,
+} from "react-native";
+import {
+  REACT_APP_AUTH_CLIENT_ID,
+  REACT_APP_AUTH_ENDPOINT,
+  REACT_APP_FB_API_KEY,
+  REACT_APP_FB_AUTH_DOMAIN,
+  REACT_APP_FB_DB,
+  REACT_APP_FB_PID,
+  REACT_APP_FB_SB,
+  REACT_APP_FB_MSG_ID,
+  REACT_APP_FB_APP_ID,
+  REACT_APP_FB_M_ID,
+} from "@env";
+import { NavigationContainer } from "@react-navigation/native";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import firebase from "firebase/app";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from "expo-file-system";
+import Closet from "./screens/Closet";
 // Optionally import the services that you want to use
 //import "firebase/auth";
 //import "firebase/database";
@@ -18,8 +40,6 @@ import * as FileSystem from 'expo-file-system';
 
 let username = "";
 
-const auth0ClientId = REACT_APP_AUTH_CLIENT_ID;
-const authorizationEndpoint = REACT_APP_AUTH_ENDPOINT;
 
 const useProxy = Platform.select({ web: false, default: true });
 const redirectUri = AuthSession.makeRedirectUri({ useProxy });
@@ -28,14 +48,6 @@ const Tab = createMaterialBottomTabNavigator();
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: REACT_APP_FB_API_KEY,
-  authDomain: REACT_APP_FB_AUTH_DOMAIN,
-  databaseURL: REACT_APP_FB_DB,
-  projectId: REACT_APP_FB_PID,
-  storageBucket: REACT_APP_FB_SB,
-  messagingSenderId: REACT_APP_FB_MSG_ID,
-  appId: REACT_APP_FB_APP_ID,
-  measurementId: REACT_APP_FB_M_ID,
 };
 
 if (!firebase.apps.length) {
@@ -46,7 +58,7 @@ if (!firebase.apps.length) {
 LogBox.ignoreLogs([`Setting a timer for a long period`]);
 
 const onSelectImagePress = () =>
-  launchImageLibrary({ mediaType: 'image' }, onMediaSelect);
+  launchImageLibrary({ mediaType: "image" }, onMediaSelect);
 
 const onMediaSelect = async (media) => {
   //INSERT YOUR CODE FOR TAKING PHOTO HERE
@@ -56,7 +68,7 @@ const onMediaSelect = async (media) => {
   const ref = firebase.storage().ref().child(`uploads/${username}`);
 
   // Upload Base64 image to Firebase
-  const snapshot = await ref.putString(file, 'base64');
+  const snapshot = await ref.putString(file, "base64");
 
   // Create a download URL
   const remoteURL = await snapshot.ref.getDownloadURL();
@@ -67,7 +79,7 @@ const onMediaSelect = async (media) => {
 
 function Camera() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text style={styles.title}>Firebase Storage</Text>
       <View>
         <TouchableOpacity style={styles.button} onPress={onSelectImagePress}>
@@ -79,16 +91,12 @@ function Camera() {
 }
 
 function Wardrobe() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Profile!</Text>
-    </View>
-  );
+  return <Closet />;
 }
 
 function Outfits() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Notifications!</Text>
     </View>
   );
@@ -101,13 +109,13 @@ function MyTabs() {
       activeColor="white"
       inactiveColor="#D0C8CE"
       labelStyle={{ fontSize: 12 }}
-      barStyle={{ backgroundColor: '#A228FF' }}
+      barStyle={{ backgroundColor: "#A228FF" }}
     >
       <Tab.Screen
         name="Camera"
         component={Camera}
         options={{
-          tabBarLabel: 'Camera',
+          tabBarLabel: "Camera",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="camera" color={color} size={26} />
           ),
@@ -117,9 +125,13 @@ function MyTabs() {
         name="Outfits"
         component={Outfits}
         options={{
-          tabBarLabel: 'Outfits',
+          tabBarLabel: "Outfits",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="tshirt-crew" color={color} size={26} />
+            <MaterialCommunityIcons
+              name="tshirt-crew"
+              color={color}
+              size={26}
+            />
           ),
         }}
       />
@@ -127,7 +139,7 @@ function MyTabs() {
         name="Wardrobe"
         component={Wardrobe}
         options={{
-          tabBarLabel: 'Wardrobe',
+          tabBarLabel: "Wardrobe",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="wardrobe" color={color} size={26} />
           ),
@@ -137,7 +149,6 @@ function MyTabs() {
   );
 }
 
-
 export default function App() {
   const [name, setName] = React.useState(null);
 
@@ -146,12 +157,12 @@ export default function App() {
       redirectUri,
       clientId: auth0ClientId,
       // id_token will return a JWT token
-      responseType: 'id_token',
+      responseType: "id_token",
       // retrieve the user's profile
-      scopes: ['openid', 'profile'],
+      scopes: ["openid", "profile"],
       extraParams: {
         // ideally, this will be a random value
-        nonce: 'nonce',
+        nonce: "nonce",
       },
     },
     { authorizationEndpoint }
@@ -165,22 +176,22 @@ export default function App() {
     if (result) {
       if (result.error) {
         Alert.alert(
-          'Authentication error',
-          result.params.error_description || 'something went wrong'
+          "Authentication error",
+          result.params.error_description || "something went wrong"
         );
         return;
       }
-      if (result.type === 'success') {
+      if (result.type === "success") {
         // Retrieve the JWT token and decode it
         const jwtToken = result.params.id_token;
         const decoded = jwtDecode(jwtToken);
-        
+
         console.log(decoded);
         const { name } = decoded;
         const { nickname } = decoded;
         const { picture } = decoded;
         setName(nickname);
-        user = {nickname};
+        user = { nickname };
       }
     }
   }, [result]);
@@ -193,8 +204,12 @@ export default function App() {
         </NavigationContainer>
       ) : (
         <View style={styles.container}>
-        <Pressable style={styles.button} disabled={!request} onPress={() => promptAsync({ useProxy })}>
-          <Text style={styles.text}>Log In</Text>
+          <Pressable
+            style={styles.button}
+            disabled={!request}
+            onPress={() => promptAsync({ useProxy })}
+          >
+            <Text style={styles.text}>Log In</Text>
           </Pressable>
         </View>
       )}
@@ -205,26 +220,26 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   button: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 50,
     marginTop: 20,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: '#D0C8CE',
+    backgroundColor: "#D0C8CE",
   },
   text: {
     fontSize: 16,
     lineHeight: 21,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     letterSpacing: 0.25,
-    color: 'white',
+    color: "white",
   },
 });
