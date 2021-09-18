@@ -4,14 +4,6 @@ import * as React from 'react';
 import { Alert, Button, Platform, StyleSheet, Text, View, Pressable } from 'react-native';
 import { REACT_APP_AUTH_CLIENT_ID, REACT_APP_AUTH_ENDPOINT } from '@env';
 
-// You need to swap out the Auth0 client id and domain with the one from your Auth0 client.
-// In your Auth0 client, you need to also add a url to your authorized redirect urls.
-//
-// For example https://auth.expo.io/@abcdef/wardrobeGuide because I am
-// signed in as the 'abcdef' account on Expo and the name/slug for this app is 'wardrobeGuide'.
-//
-// You can open this app in the Expo client and check your logs to find out your redirect URL.
-
 const auth0ClientId = REACT_APP_AUTH_CLIENT_ID;
 const authorizationEndpoint = REACT_APP_AUTH_ENDPOINT;
 
