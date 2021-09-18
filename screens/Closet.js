@@ -25,6 +25,10 @@ function Closet(props) {
             title: "Shoes",
             clothes: data.filter((item) => item.type === "shoes"),
           },
+          {
+            title: "Bags",
+            clothes: data.filter((item) => item.type === "bags"),
+          },
         ]}
       />
     </View>

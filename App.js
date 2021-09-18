@@ -1,6 +1,6 @@
 import * as AuthSession from "expo-auth-session";
 import jwtDecode from "jwt-decode";
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Alert,
   Button,
@@ -11,6 +11,7 @@ import {
   Pressable,
   LogBox,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import {
   REACT_APP_AUTH_CLIENT_ID,
@@ -31,6 +32,8 @@ import firebase from "firebase/app";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import Closet from "./screens/Closet";
+import { Camera } from "expo-camera";
+import { useIsFocused } from "@react-navigation/native";
 // Optionally import the services that you want to use
 //import "firebase/auth";
 //import "firebase/database";
@@ -77,16 +80,59 @@ const onMediaSelect = async (media) => {
   return remoteURL;
 };
 
-function Camera() {
+function CameraTab() {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text style={styles.title}>Firebase Storage</Text>
-      <View>
-        <TouchableOpacity style={styles.button} onPress={onSelectImagePress}>
-          <Text style={styles.buttonText}>Upload a Photo</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      {isFocused && (
+        <Camera
+          style={{ flex: 1 }}
+          type={type}
+          ref={(ref) => {
+            this.camera = ref;
+          }}
+        >
+          <View>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setType(
+                  type === Camera.Constants.Type.back
+                    ? Camera.Constants.Type.front
+                    : Camera.Constants.Type.back
+                );
+              }}
+            >
+              <Text style={styles.text}> Flip </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                this.camera.takePictureAsync();
+              }}
+            >
+              <Text style={styles.text}> Capture </Text>
+            </TouchableOpacity>
+          </View>
+        </Camera>
+      )}
+    </SafeAreaView>
   );
 }
 
@@ -112,10 +158,10 @@ function MyTabs() {
       barStyle={{ backgroundColor: "#A228FF" }}
     >
       <Tab.Screen
-        name="Camera"
-        component={Camera}
+        name="CameraTab"
+        component={CameraTab}
         options={{
-          tabBarLabel: "Camera",
+          tabBarLabel: "CameraTab",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="camera" color={color} size={26} />
           ),

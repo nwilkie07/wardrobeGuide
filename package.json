@@ -31,7 +31,8 @@
     "react-native-paper": "^4.9.2",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "expo-camera": "~11.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
