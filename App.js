@@ -12,8 +12,8 @@ import Constants from 'expo-constants';
 //
 // You can open this app in the Expo client and check your logs to find out your redirect URL.
 
-const auth0ClientId = Constants.manifest.extra.auth0ClientId;
-const authorizationEndpoint = Constants.manifest.extra.authorizationEndpoint;
+const auth0ClientId = process.env.auth0ClientId;
+const authorizationEndpoint = process.env.authorizationEndpoint;
 
 const useProxy = Platform.select({ web: false, default: true });
 const redirectUri = AuthSession.makeRedirectUri({ useProxy });
