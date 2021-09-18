@@ -17,7 +17,9 @@ Each Expo user has it's own URL for different projects, the basic structure of t
 > [Read more about AuthSession here](https://docs.expo.dev/versions/latest/sdk/auth-session/)
 
 #### Create a .env file
-`REACT_APP_AUTH_CLIENT_ID=EMPTY \n REACT_APP_AUTH_ENDPOINT=EMPTY`
+`REACT_APP_AUTH_CLIENT_ID=EMPTY`
+
+`REACT_APP_AUTH_ENDPOINT=EMPTY`
 
 ## 📝 Notes
 
