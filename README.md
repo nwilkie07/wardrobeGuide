@@ -1,26 +1,34 @@
 # 👕👖Match Up! A Wardrobe Guide
-<img width="371" alt="logo" src="https://user-images.githubusercontent.com/77548862/133926637-f4a8597d-1cd6-4a90-85dd-c387eaaf3e8f.png">
+![icon](https://user-images.githubusercontent.com/77548862/133927664-d3952ad1-7574-4bdb-ab17-8cc4d0c50cc7.png)
 
-## Inspiration
-No idea of what to wear? We are here to solve it!
+### Inspiration
+**No idea of what to wear? We are here to solve it! **   
+✨A flash of spiritual light! We thought of weather-music generators and personal closet recording application, so why don't we make an app that generates outfit based on the weather?   
+Already tired of struggling to choose what to wear today in front of the closet, you always forget that you have some clothes sitting in the corner that you haven't had time to take out yet and have missed the right season. What is the weather today? Should I dress cooler or is it best to keep warm?    
 
-## What it does
-Generate your outfit of the day with what's in your wardrobe.
+### What it does
+📷 You can keep track of your clothes in your Match Up wardrobe by taking pictures of them.  
+🪄 Generate your outfit of the day based on today's weather with what's in your wardrobe.  
+🕺 Easily browse and manage the clothes you have now in Match Up.  
 
-## How we built it
+### How we built it
 React-native, Node.js, Expo.io, Firebase API, Auth0 API
 
-## Challenges we ran into
-Getting the APIs to work with our flow and putting our UI design to live.
+### Challenges we ran into
+- Getting the APIs to work with our flow and putting our UI design to live. 
+- The team members have different time zones around the globe, but we overcome this well: there is always someone who is continuing to work at any given time.
 
-## Accomplishments that we're proud of
-We've made it! Our first Hackathon project.
+### Accomplishments that we're proud of
+- We've made it! Our first Hackathon project! We finally finished the project!
+- We succeeded in accomplishing the functionality we originally envisioned.
+- We have a good looking UI in the end.  
 
-## What we learned
-Our first try of app development.
+### What we learned
+Our skills were further enhanced by working together and learning from each other. This was the first time we completed a project in such a short period of time that we were not able to perfect every detail. We couldn't think too much, but we had to do those things that we could accomplish. We learned more about how to work with different functional team members to complete the project, and this experience will help us collaborate better when we do more complex projects.   
 
-## What's next for Match Up!
-Updates and improvements hopefully. Or maybe get abandoned :)
+### What's next for Match Up!
+- Updates and improvements hopefully. Or maybe get abandoned :)
+- Optimize it's prototype and make a smoother user experience - it might be in our future portfolio!
 
 # Auth0 Setup
 
