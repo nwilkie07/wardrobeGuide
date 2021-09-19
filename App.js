@@ -12,6 +12,8 @@ import {
   LogBox,
   TouchableOpacity,
   SafeAreaView,
+  Image,
+  ImageBackground,
 } from "react-native";
 import {
   REACT_APP_AUTH_CLIENT_ID,
@@ -42,7 +44,6 @@ import { useIsFocused } from "@react-navigation/native";
 //import "firebase/storage";
 
 let username = "";
-
 
 const useProxy = Platform.select({ web: false, default: true });
 const redirectUri = AuthSession.makeRedirectUri({ useProxy });
@@ -89,58 +90,45 @@ const onMediaSelect = async (media) => {
 };
 
 function CameraTab() {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
-  const isFocused = useIsFocused();
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === "granted");
+      if (Platform.OS !== "web") {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
     })();
   }, []);
 
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      {isFocused && (
-        <Camera
-          style={{ flex: 1 }}
-          type={type}
-          ref={(ref) => {
-            this.camera = ref;
-          }}
-        >
-          <View>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                setType(
-                  type === Camera.Constants.Type.back
-                    ? Camera.Constants.Type.front
-                    : Camera.Constants.Type.back
-                );
-              }}
-            >
-              <Text style={styles.text}> Flip </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                this.camera.takePictureAsync();
-              }}
-            >
-              <Text style={styles.text}> Capture </Text>
-            </TouchableOpacity>
-          </View>
-        </Camera>
+    <View
+      style={{ flex: 1, alignItems: "center", justifyContent: "space-around" }}
+    >
+      <Button title="Pick an image from camera roll" onPress={pickImage} />
+      {image && (
+        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
       )}
-    </SafeAreaView>
+      <Button title="Upload to Wardrobe"></Button>
+    </View>
   );
 }
 
@@ -258,6 +246,11 @@ export default function App() {
         </NavigationContainer>
       ) : (
         <View style={styles.container}>
+          <ImageBackground
+            source={require("./assets/loginScreen.png")}
+            style={{ flex: 1 }}
+            resizeMode="cover"
+          ></ImageBackground>
           <Pressable
             style={styles.button}
             disabled={!request}
@@ -275,8 +268,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    resizeMode: "stretch",
   },
   button: {
     alignItems: "center",
@@ -284,7 +276,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 50,
-    marginTop: 20,
+    marginTop: 0,
     borderRadius: 4,
     elevation: 3,
     backgroundColor: "#D0C8CE",
