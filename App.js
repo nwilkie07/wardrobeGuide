@@ -33,6 +33,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import firebase from "firebase";
 import * as ImagePicker from "expo-image-picker";
 import Closet from "./screens/Closet";
+import Main from "./screens/Main";
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from "uuid";
 import { Camera } from "expo-camera";
@@ -181,9 +182,7 @@ function Wardrobe() {
 
 function Outfits() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Notifications!</Text>
-    </View>
+    <Main />
   );
 }
 
