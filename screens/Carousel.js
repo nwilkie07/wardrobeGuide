@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
   label: {
     height: 40,
     fontSize: 32,
+    color: "white",
   },
 });
 

@@ -47,6 +47,12 @@ const clothes = [
     type: "shoes",
     temp: "cold",
   },
+  {
+    image:
+      "https://static.zara.net/photos///2021/I/1/2/p/3626/820/040/2/w/850/3626820040_6_1_1.jpg?ts=1631627525334",
+    type: "bags",
+    temp: "warm",
+  },
 ];
 
 export default clothes;
