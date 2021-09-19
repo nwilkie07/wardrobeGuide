@@ -30,10 +30,11 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import firebase from "firebase/app";
+import firebase from "firebase";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 import Closet from "./screens/Closet";
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from "uuid";
 import { Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
 // Optionally import the services that you want to use
@@ -45,6 +46,9 @@ import { useIsFocused } from "@react-navigation/native";
 
 let username = "";
 
+const auth0ClientId = REACT_APP_AUTH_CLIENT_ID;
+const authorizationEndpoint = REACT_APP_AUTH_ENDPOINT;
+
 const useProxy = Platform.select({ web: false, default: true });
 const redirectUri = AuthSession.makeRedirectUri({ useProxy });
 
@@ -52,14 +56,14 @@ const Tab = createMaterialBottomTabNavigator();
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: "",
+  apiKey: REACT_APP_FB_API_KEY,
+  authDomain: REACT_APP_FB_AUTH_DOMAIN,
+  databaseURL: REACT_APP_FB_DB,
+  projectId: REACT_APP_FB_PID,
+  storageBucket: REACT_APP_FB_SB,
+  messagingSenderId: REACT_APP_FB_MSG_ID,
+  appId: REACT_APP_FB_APP_ID,
+  measurementId: REACT_APP_FB_M_ID,
 };
 
 if (!firebase.apps.length) {
@@ -69,29 +73,33 @@ if (!firebase.apps.length) {
 // Firebase sets some timeers for a long period, which will trigger some warnings. Let's turn that off for this example
 LogBox.ignoreLogs([`Setting a timer for a long period`]);
 
-const onSelectImagePress = () =>
-  launchImageLibrary({ mediaType: "image" }, onMediaSelect);
+async function uploadImageAsync(uri) {
+  console.log(uri);
+  console.log(username);
+    
+  const response = await fetch(uri);
+  const blob = await response.blob();
+  const ref = firebase
+      .storage()
+      .ref()
+      .child(`userUpload/${username}/`+uuidv4());
 
-const onMediaSelect = async (media) => {
-  //INSERT YOUR CODE FOR TAKING PHOTO HERE
-  //img to be uploaded is assumed to be a variable called file
-
-  // Create a ref in Firebase (user's ID)
-  const ref = firebase.storage().ref().child(`uploads/${username}`);
-
-  // Upload Base64 image to Firebase
-  const snapshot = await ref.putString(file, "base64");
-
-  // Create a download URL
-  const remoteURL = await snapshot.ref.getDownloadURL();
-
-  // Return the URL
-  return remoteURL;
-};
+  await ref.put(blob)
+      .then(snapshot => {
+          return snapshot.ref.getDownloadURL(); 
+      })
+      .then(downloadURL => {
+          console.log(`Successfully uploaded file and got download link - ${downloadURL}`);
+          return downloadURL;
+  });
+}
 
 function CameraTab() {
   const [image, setImage] = useState(null);
-
+  const isFocused = useIsFocused();
+  const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {
@@ -106,7 +114,7 @@ function CameraTab() {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -115,20 +123,55 @@ function CameraTab() {
     console.log(result);
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage(result);
     }
+    console.log('Image URL:'+ result.uri);
+
+    let downloadURL = uploadImageAsync(result.uri);
+    console.log(downloadURL);
   };
 
   return (
-    <View
-      style={{ flex: 1, alignItems: "center", justifyContent: "space-around" }}
-    >
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+    <SafeAreaView style={{ flex: 1 }}>
+      {isFocused && (
+        <Camera
+          style={{ flex: 1 }}
+          type={type}
+          ref={(ref) => {
+            this.camera = ref;
+          }}
+        >
+          <View>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setType(
+                  type === Camera.Constants.Type.back
+                    ? Camera.Constants.Type.front
+                    : Camera.Constants.Type.back
+                );
+              }}
+            >
+              <Text style={styles.text}> Flip Camera </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                this.camera.takePictureAsync();
+              }}
+            >
+              <Text style={styles.text}> Capture </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={pickImage}
+            >
+              <Text style={styles.text}> Choose and Upload </Text>
+            </TouchableOpacity>
+          </View>
+        </Camera>
       )}
-      <Button title="Upload to Wardrobe"></Button>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -149,15 +192,15 @@ function MyTabs() {
     <Tab.Navigator
       initialRouteName="Feed"
       activeColor="white"
-      inactiveColor="#D0C8CE"
+      //inactiveColor="#D0C8CE"
       labelStyle={{ fontSize: 12 }}
-      barStyle={{ backgroundColor: "#A228FF" }}
+      barStyle={{ backgroundColor: "#D0C8CE" }}
     >
       <Tab.Screen
         name="CameraTab"
         component={CameraTab}
         options={{
-          tabBarLabel: "CameraTab",
+          tabBarLabel: "Camera",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="camera" color={color} size={26} />
           ),
@@ -233,7 +276,7 @@ export default function App() {
         const { nickname } = decoded;
         const { picture } = decoded;
         setName(nickname);
-        user = { nickname };
+        username = decoded.nickname;
       }
     }
   }, [result]);
