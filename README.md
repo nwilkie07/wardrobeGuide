@@ -1,4 +1,28 @@
-# Auth0 Example
+# 👕👖Match Up! A Wardrobe Guide
+<img width="371" alt="logo" src="https://user-images.githubusercontent.com/77548862/133926637-f4a8597d-1cd6-4a90-85dd-c387eaaf3e8f.png">
+
+## Inspiration
+No idea of what to wear? We are here to solve it!
+
+## What it does
+Generate your outfit of the day with what's in your wardrobe.
+
+## How we built it
+React-native, Node.js, Expo.io, Firebase API, Auth0 API
+
+## Challenges we ran into
+Getting the APIs to work with our flow and putting our UI design to live.
+
+## Accomplishments that we're proud of
+We've made it! Our first Hackathon project.
+
+## What we learned
+Our first try of app development.
+
+## What's next for Match Up!
+Updates and improvements hopefully. Or maybe get abandoned :)
+
+# Auth0 Setup
 
 ## 🚀 How to use
 
