@@ -1,5 +1,5 @@
 # 👕👖Match Up! A Wardrobe Guide
-<img width="371" alt="logo" src="https://user-images.githubusercontent.com/77548862/133926637-f4a8597d-1cd6-4a90-85dd-c387eaaf3e8f.png">
+![icon](https://user-images.githubusercontent.com/77548862/133927664-d3952ad1-7574-4bdb-ab17-8cc4d0c50cc7.png)
 
 ## Inspiration
 No idea of what to wear? We are here to solve it!
