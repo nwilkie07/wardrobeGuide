@@ -1,5 +1,5 @@
 import { installWebGeolocationPolyfill } from "expo-location";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Image,
@@ -24,7 +24,11 @@ function Main(props) {
   const [location, setLocation] = useState("");
   const [temperature, setTemperature] = useState("");
   const [condition, setCondition] = useState("");
-  installWebGeolocationPolyfill();
+
+  useEffect(() => {
+    installWebGeolocationPolyfill();
+  }, []);
+
   var options = {
     enableHighAccuracy: true,
     timeout: 5000,
@@ -210,7 +214,7 @@ function Main(props) {
               </Pressable>
             </View>
             <Text style={styles.temp}>
-              {Math.round(parseFloat(temperature)) + " C"}
+              {temperature ? `${Math.round(parseFloat(temperature))} C` : ""}
             </Text>
           </View>
           <View style={[styles.box, { flex: 2 }]}>
@@ -271,7 +275,7 @@ const styles = StyleSheet.create({
   bg: {
     flex: 1,
     justifyContent: "center",
-    paddingTop: 128,
+    paddingTop: 150,
     paddingBottom: 64,
     paddingRight: 16,
     paddingLeft: 16,
